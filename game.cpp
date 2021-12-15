@@ -11,7 +11,7 @@ int level;
 void start_game()
 {
     init_snake(1);
-    init_snake(2);
+    //init_snake(2);
 
     init_food();
     score = 0;
@@ -78,7 +78,7 @@ bool game_logic(int k)
 
         if (try_eating_food(head))
         {
-            grow_snake();
+            grow_snake1();
             score++;
         }
         if (has_collision())
@@ -88,7 +88,7 @@ bool game_logic(int k)
                 high_score = score;
         }
         paint_snake(1);
-        paint_snake(2);
+        //paint_snake(2);
 
         paint_food();
     }

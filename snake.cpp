@@ -67,6 +67,8 @@ void paint_snake(int player)
 }
 
 pair<int, int> tailSnake1;
+pair<int, int> tailSnake2;
+
 
 pair<int, int> move_snake(int direction)
 {
