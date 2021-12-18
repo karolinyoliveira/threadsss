@@ -1,116 +1,64 @@
 #include "snake.h"
 
-// TODO: Implement snake with class
-
-int x, y;
-vector<pair<int, int>> bodySnake1;
-vector<pair<int, int>> bodySnake2;
-
-void init_snake(int player)
+void Snake::init(vector<pair<int, int>> startingPos)
 {
-    switch (player)
+    body.clear();
+    body.push_back(startingPos[0]);
+    body.push_back(startingPos[1]);
+    body.push_back(startingPos[2]);
+}
+
+void Snake::paint(int color1, int color2)
+{
+    for (int i = 0; i < body.size(); i++)
     {
-    case 1:
-    {
-        bodySnake1.clear();
-        bodySnake1.push_back({10, 10});
-        bodySnake1.push_back({10, 11});
-        bodySnake1.push_back({10, 12});
-        break;
-    }
-    case 2:
-    {
-        bodySnake2.clear();
-        bodySnake2.push_back({20, 10});
-        bodySnake2.push_back({20, 11});
-        bodySnake2.push_back({20, 12});
-        break;
-    }
-    default:
-        break;
+        pair<int, int> location = body[i];
+        move(location.first, location.second);
+        init_pair(2, color1, color2);
+        attron(COLOR_PAIR(2));
+        addch('-');
+        attroff(COLOR_PAIR(2));
     }
 }
 
-void paint_snake(int player)
+pair<int, int> Snake::slither(int direction)
 {
-    switch (player)
-    {
-    case 1:
-    {
-        for (int i = 0; i < bodySnake1.size(); i++)
-        {
-            pair<int, int> location = bodySnake1[i];
-            move(location.first, location.second);
-            init_pair(2, COLOR_BLUE, COLOR_GREEN);
-            attron(COLOR_PAIR(2));
-            addch('-');
-            attroff(COLOR_PAIR(2));
-        }
-        break;
-    }
-    case 2:
-    {
-        for (int i = 0; i < bodySnake2.size(); i++)
-        {
-            pair<int, int> location = bodySnake2[i];
-            move(location.first, location.second);
-            init_pair(2, COLOR_MAGENTA, COLOR_BLUE);
-            attron(COLOR_PAIR(2));
-            addch('-');
-            attroff(COLOR_PAIR(2));
-        }
-        break;
-    }
-    default:
-        break;
-    }
-}
-
-pair<int, int> tailSnake1;
-pair<int, int> tailSnake2;
-
-
-pair<int, int> move_snake(int direction)
-{
-    tailSnake1 = bodySnake1[bodySnake1.size() - 1];
-    bodySnake1.pop_back();
-    pair<int, int> old_head = bodySnake1[0];
+    tail = body[body.size() - 1];
+    body.pop_back();
+    pair<int, int> old_head = body[0];
     pair<int, int> new_head = old_head;
 
-    if (direction == UP)
+    switch (direction)
     {
+    case UP:
         new_head.first--;
-    }
-    else if (direction == DOWN)
-    {
+        break;
+    case DOWN:
         new_head.first++;
-    }
-    else if (direction == LEFT)
-    {
+        break;
+    case LEFT:
         new_head.second--;
-    }
-    else if (direction == RIGHT)
-    {
+        break;
+    case RIGHT:
         new_head.second++;
+        break;
+    default:
+        break;
     }
-    bodySnake1.insert(bodySnake1.begin(), new_head);
+
+    body.insert(body.begin(), new_head);
     return new_head;
 }
 
-void grow_snake1()
+void Snake::grow()
 {
-    bodySnake1.push_back(tailSnake1);
-}
-
-void grow_snake2()
-{
-    bodySnake2.push_back(tailSnake2);
+    body.push_back(tail);
 }
 
 // CRITIC AREA: Implement with semaphores
-bool has_collision()
+bool Snake::has_collision()
 {
-    pair<int, int> head = bodySnake1[0];
+    pair<int, int> head = body[0];
     int x = head.first, y = head.second;
 
     if (x == 0 || y == 0 || x == LINES - 1 || y == COLS - 1)
@@ -118,9 +66,9 @@ bool has_collision()
         return true;
     }
 
-    for (int i = 1; i < bodySnake1.size(); i++)
+    for (int i = 1; i < body.size(); i++)
     {
-        if (head == bodySnake1[i])
+        if (head == body[i])
         {
             return true;
         }

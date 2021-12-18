@@ -13,7 +13,7 @@ const int SPEEDMEDIUM=100000;
 const int SPEEDHARD=70000;
 
 // TODO: remove warning messages when make run is called
-int setSpeed(int mode)
+int set_speed(int mode)
 {
     switch (mode)
     {
@@ -64,7 +64,7 @@ int main()
         cout << "\n Invalid mode, try again!"<<endl;
         return 1;
     }
-    int speed = setSpeed(mode);
+    int speed = set_speed(mode);
 
     init_ui();
     event_loop(mode,speed);

@@ -18,7 +18,7 @@ void tear_down_ui()
 void paint_border()
 {
     start_color();
-    init_pair(1, COLOR_YELLOW, COLOR_BLACK); // if you want to add colors: https://www.mkssoftware.com/docs/man3/curs_attr.3.asp
+    init_pair(1, COLOR_YELLOW, COLOR_BLACK);
     attron(A_STANDOUT);
     for (int i = 0; i < COLS; i++)
     {
