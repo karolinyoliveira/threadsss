@@ -17,7 +17,7 @@ void start_game()
     position_p1.push_back(make_pair(10, 11));
     position_p1.push_back(make_pair(10, 12));
     player1.init(position_p1);
-
+    
     vector<pair<int, int>> position_p2;
     position_p2.push_back(make_pair(20, 0));
     position_p2.push_back(make_pair(20, 1));
@@ -102,8 +102,10 @@ bool game_logic(int k)
         }
 
 
-        // ------------------------------ PLAYER 2 --------------------------------------
 
+
+        // ------------------------------ PLAYER 2 --------------------------------------
+        /*
         if (key == 38 && direction != DOWN)
         {
             direction = UP;
@@ -136,6 +138,7 @@ bool game_logic(int k)
             if (score > high_score)
                 high_score = score;
         }
+        */
 
         paint_food();
     }
