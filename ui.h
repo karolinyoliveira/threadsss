@@ -2,10 +2,16 @@
 
 #define DEF_UI
 
-#include<curses.h>
+#include <curses.h>
 
-void init_ui();
-void tear_down_ui();
-void paint_border();
+class UI
+{
+private:
+    char border_char = '#';
+public:
+    void init();
+    void finish();
+    void paint();
+};
 
 #endif

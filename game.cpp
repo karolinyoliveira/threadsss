@@ -5,7 +5,7 @@ int direction_p2;
 int game_state = BEFORE_START;
 
 int score;
-int high_score = 0;
+int score2 = 0;
 int level;
 
 Snake player1;
@@ -15,8 +15,8 @@ void start_game()
 {
     vector<pair<int, int>> position_p1;
     position_p1.push_back(make_pair(rand() % LINES, rand() % COLS));
-    position_p1.push_back(make_pair(position_p1[0].first-1, position_p1[0].second));
-    position_p1.push_back(make_pair(position_p1[1].first-1, position_p1[1].second));
+    position_p1.push_back(make_pair(position_p1[0].first - 1, position_p1[0].second));
+    position_p1.push_back(make_pair(position_p1[1].first - 1, position_p1[1].second));
     player1.init(position_p1);
 
     vector<pair<int, int>> position_p2;
@@ -49,15 +49,15 @@ void paint_score(int k)
         strcpy(s, s2);
     else if (k == 3)
         strcpy(s, s3);
-    addstr("|||                  Score ");
-    printw("%d High Score %d  Difficulty %s           |||", score, high_score, s);
+    addstr("|||                  Score P1: ");
+    printw("%d Score P2 %d  Difficulty %s           |||", score, score2, s);
 }
 
 // TODO: Create a class to save infos like snake, controls and score for a specific player
-bool game_logic(int k)
+bool game_logic(UI ui, int k)
 {
     int key = getch();
-    paint_border();
+    ui.paint();
     paint_score(k);
     if (game_state == BEFORE_START)
     {
@@ -70,8 +70,6 @@ bool game_logic(int k)
     }
     else if (game_state == START)
     {
-
-
         // ------------------------------ PLAYER 1 --------------------------------------
         if ((key == UP || key == UPA || key == UPB) && direction_p1 != DOWN)
         {
@@ -90,7 +88,7 @@ bool game_logic(int k)
             direction_p1 = RIGHT;
         }
         pair<int, int> head = player1.slither(direction_p1);
-        player1.paint(COLOR_GREEN,COLOR_GREEN);
+        player1.paint(1, COLOR_GREEN);
 
         if (try_eating_food(head))
         {
@@ -101,13 +99,11 @@ bool game_logic(int k)
         if (player1.has_collision())
         {
             endgame();
-            if (score > high_score)
-                high_score = score;
         }
 
-
         // ------------------------------ PLAYER 2 --------------------------------------
-        if (key=='\033') { // reading arrows
+        if (key == '\033')
+        {            // reading arrows
             getch(); // skipping '[' character
             key = getch();
             if (key == 'A' && direction_p2 != DOWN)
@@ -127,20 +123,19 @@ bool game_logic(int k)
                 direction_p2 = RIGHT;
             }
         }
-        pair<int, int> head2 = player2.slither(direction_p2);
-        player2.paint(COLOR_YELLOW,COLOR_YELLOW);
 
-         if (try_eating_food(head2))
+        pair<int, int> head2 = player2.slither(direction_p2);
+        player2.paint(2, COLOR_YELLOW);
+
+        if (try_eating_food(head2))
         {
             player2.grow();
-            score++;
+            score2++;
         }
 
         if (player2.has_collision())
         {
             endgame();
-            if (score > high_score)
-                high_score = score;
         }
 
         paint_food();

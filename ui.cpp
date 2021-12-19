@@ -1,7 +1,6 @@
 #include "ui.h"
 
-char border_char = '#';
-void init_ui()
+void UI::init()
 {
     initscr();
 
@@ -10,16 +9,15 @@ void init_ui()
     curs_set(0);
 }
 
-void tear_down_ui()
+void UI::finish()
 {
     endwin();
 }
 
-void paint_border()
+void UI::paint()
 {
     start_color();
-    init_pair(1, COLOR_YELLOW, COLOR_BLACK);
-    attron(A_STANDOUT);
+    attron(A_NORMAL);
     for (int i = 0; i < COLS; i++)
     {
         move(0, i);
@@ -35,5 +33,5 @@ void paint_border()
         move(i, COLS - 1);
         addch(border_char);
     }
-    attroff(A_STANDOUT);
+    attroff(A_NORMAL);
 }
