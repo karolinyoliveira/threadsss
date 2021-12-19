@@ -21,29 +21,28 @@ void Snake::paint(int nplayer, int color)
     }
 }
 
-pair<int, int> Snake::slither(int direction)
+pair<int, int> Snake::slither(Controls crtl, int direction)
 {
     tail = body[body.size() - 1];
     body.pop_back();
     pair<int, int> old_head = body[0];
     pair<int, int> new_head = old_head;
 
-    switch (direction)
+    if (direction == crtl.up)
     {
-    case UP:
-        new_head.first = new_head.first-1 < 0 ? LINES - 1 : new_head.first - 1;
-        break;
-    case DOWN:
-        new_head.first = new_head.first+1 > LINES-1 ? 0 : new_head.first + 1;
-        break;
-    case LEFT:
-        new_head.second = new_head.second-1 < 0 ? COLS-1 : new_head.second - 1;
-        break;
-    case RIGHT:
-        new_head.second = new_head.second+1 > COLS-1 ? 0 : new_head.second + 1;
-        break;
-    default:
-        break;
+        new_head.first = new_head.first - 1 < 0 ? LINES - 1 : new_head.first - 1;
+    }
+    if (direction == crtl.down)
+    {
+        new_head.first = new_head.first + 1 > LINES - 1 ? 0 : new_head.first + 1;
+    }
+    if (direction == crtl.left)
+    {
+        new_head.second = new_head.second - 1 < 0 ? COLS - 1 : new_head.second - 1;
+    }
+    if (direction == crtl.right)
+    {
+        new_head.second = new_head.second + 1 > COLS - 1 ? 0 : new_head.second + 1;
     }
 
     body.insert(body.begin(), new_head);

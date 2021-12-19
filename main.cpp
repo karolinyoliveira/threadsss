@@ -1,31 +1,28 @@
 #include <iostream>
 #include <unistd.h>
 #include <curses.h>
-#include "settings_constant.h"
+#include "constants.h"
 #include <chrono>
 #include "ui.h"
 #include "game.h"
 
 using namespace std;
 
-const int SPEEDEASY = 140000;
-const int SPEEDMEDIUM = 100000;
-const int SPEEDHARD = 70000;
-
-// TODO: remove warning messages when make run is called
 int set_speed(int mode)
 {
+    int speed;
     switch (mode)
     {
     case 1:
-        return SPEEDEASY;
+        speed = SPEEDEASY;
     case 2:
-        return SPEEDMEDIUM;
+        speed = SPEEDMEDIUM;
     case 3:
-        return SPEEDHARD;
+        speed = SPEEDHARD;
     default:
         break;
     }
+    return speed;
 }
 
 void event_loop(UI ui, int q, int delay)
