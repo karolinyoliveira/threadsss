@@ -31,16 +31,16 @@ pair<int, int> Snake::slither(int direction)
     switch (direction)
     {
     case UP:
-        new_head.first--;
+        new_head.first = new_head.first-1 < 0 ? LINES - 1 : new_head.first - 1;
         break;
     case DOWN:
-        new_head.first++;
+        new_head.first = new_head.first+1 > LINES-1 ? 0 : new_head.first + 1;
         break;
     case LEFT:
-        new_head.second--;
+        new_head.second = new_head.second-1 < 0 ? COLS-1 : new_head.second - 1;
         break;
     case RIGHT:
-        new_head.second++;
+        new_head.second = new_head.second+1 > COLS-1 ? 0 : new_head.second + 1;
         break;
     default:
         break;
@@ -60,11 +60,6 @@ bool Snake::has_collision()
 {
     pair<int, int> head = body[0];
     int x = head.first, y = head.second;
-
-    if (x == 0 || y == 0 || x == LINES - 1 || y == COLS - 1)
-    {
-        return true;
-    }
 
     for (int i = 1; i < body.size(); i++)
     {

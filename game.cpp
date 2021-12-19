@@ -1,6 +1,7 @@
 #include "game.h"
 
-int direction;
+int direction_p1;
+int direction_p2;
 int game_state = BEFORE_START;
 
 int score;
@@ -13,9 +14,9 @@ Snake player2;
 void start_game()
 {
     vector<pair<int, int>> position_p1;
-    position_p1.push_back(make_pair(10, 10));
-    position_p1.push_back(make_pair(10, 11));
-    position_p1.push_back(make_pair(10, 12));
+    position_p1.push_back(make_pair(rand() % LINES, rand() % COLS));
+    position_p1.push_back(make_pair(position_p1[0].first-1, position_p1[0].second));
+    position_p1.push_back(make_pair(position_p1[1].first-1, position_p1[1].second));
     player1.init(position_p1);
 
     vector<pair<int, int>> position_p2;
@@ -26,7 +27,8 @@ void start_game()
 
     init_food();
     score = 0;
-    direction = LEFT;
+    direction_p1 = LEFT;
+    direction_p2 = LEFT;
     game_state = START;
 }
 
@@ -68,24 +70,26 @@ bool game_logic(int k)
     }
     else if (game_state == START)
     {
-        if ((key == UP || key == UPA || key == UPB) && direction != DOWN)
-        {
-            direction = UP;
-        }
-        else if ((key == DOWN || key == DOWNB || key == DOWNA) && direction != UP)
-        {
-            direction = DOWN;
-        }
-        else if ((key == LEFT || key == LEFTA || key == LEFTB) && direction != RIGHT)
-        {
-            direction = LEFT;
-        }
-        else if ((key == RIGHT || key == RIGHTA || key == RIGHTB) && direction != LEFT)
-        {
-            direction = RIGHT;
-        }
-        pair<int, int> head = player1.slither(direction);
 
+
+        // ------------------------------ PLAYER 1 --------------------------------------
+        if ((key == UP || key == UPA || key == UPB) && direction_p1 != DOWN)
+        {
+            direction_p1 = UP;
+        }
+        else if ((key == DOWN || key == DOWNB || key == DOWNA) && direction_p1 != UP)
+        {
+            direction_p1 = DOWN;
+        }
+        else if ((key == LEFT || key == LEFTA || key == LEFTB) && direction_p1 != RIGHT)
+        {
+            direction_p1 = LEFT;
+        }
+        else if ((key == RIGHT || key == RIGHTA || key == RIGHTB) && direction_p1 != LEFT)
+        {
+            direction_p1 = RIGHT;
+        }
+        pair<int, int> head = player1.slither(direction_p1);
         player1.paint(COLOR_GREEN,COLOR_GREEN);
 
         if (try_eating_food(head))
@@ -103,25 +107,27 @@ bool game_logic(int k)
 
 
         // ------------------------------ PLAYER 2 --------------------------------------
-
-        if (key == 38 && direction != DOWN)
-        {
-            direction = UP;
+        if (key=='\033') { // reading arrows
+            getch(); // skipping '[' character
+            key = getch();
+            if (key == 'A' && direction_p2 != DOWN)
+            {
+                direction_p2 = UP;
+            }
+            else if (key == 'B' && direction_p2 != UP)
+            {
+                direction_p2 = DOWN;
+            }
+            else if (key == 'D' && direction_p2 != RIGHT)
+            {
+                direction_p2 = LEFT;
+            }
+            else if (key == 'C' && direction_p2 != LEFT)
+            {
+                direction_p2 = RIGHT;
+            }
         }
-        else if (key == 40 && direction != UP)
-        {
-            direction = DOWN;
-        }
-        else if (key == 37 && direction != RIGHT)
-        {
-            direction = LEFT;
-        }
-        else if (key == 39 && direction != LEFT)
-        {
-            direction = RIGHT;
-        }
-        pair<int, int> head2 = player2.slither(direction);
-
+        pair<int, int> head2 = player2.slither(direction_p2);
         player2.paint(COLOR_YELLOW,COLOR_YELLOW);
 
          if (try_eating_food(head2))
