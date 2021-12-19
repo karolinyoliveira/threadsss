@@ -15,10 +15,13 @@ int set_speed(int mode)
     {
     case 1:
         speed = SPEEDEASY;
+        break;
     case 2:
         speed = SPEEDMEDIUM;
+        break;
     case 3:
         speed = SPEEDHARD;
+        break;
     default:
         break;
     }
