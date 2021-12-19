@@ -15,7 +15,7 @@ private:
 
 public:
     void init(vector<pair<int, int>> startingPos);
-    void paint(int color1, int color2);
+    void paint(int nplayer, int color);
     void grow();
     bool has_collision();
     pair<int, int> slither(int direction);

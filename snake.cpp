@@ -8,16 +8,16 @@ void Snake::init(vector<pair<int, int>> startingPos)
     body.push_back(startingPos[2]);
 }
 
-void Snake::paint(int color1, int color2)
+void Snake::paint(int nplayer, int color)
 {
     for (int i = 0; i < body.size(); i++)
     {
         pair<int, int> location = body[i];
         move(location.first, location.second);
-        init_pair(2, color1, color2);
-        attron(COLOR_PAIR(2));
+        init_pair(nplayer, color, color);
+        attron(COLOR_PAIR(nplayer));
         addch('-');
-        attroff(COLOR_PAIR(2));
+        attroff(COLOR_PAIR(nplayer));
     }
 }
 
