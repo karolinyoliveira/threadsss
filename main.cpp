@@ -1,34 +1,34 @@
 #include <iostream>
 #include <unistd.h>
 #include <curses.h>
-#include "settings_constant.h"
+#include "constants.h"
 #include <chrono>
 #include "ui.h"
 #include "game.h"
 
 using namespace std;
 
-const int SPEEDEASY=140000;
-const int SPEEDMEDIUM=100000;
-const int SPEEDHARD=70000;
-
-// TODO: remove warning messages when make run is called
 int set_speed(int mode)
 {
+    int speed;
     switch (mode)
     {
     case 1:
-        return SPEEDEASY;
+        speed = SPEEDEASY;
+        break;
     case 2:
-        return SPEEDMEDIUM;
+        speed = SPEEDMEDIUM;
+        break;
     case 3:
-        return SPEEDHARD;    
+        speed = SPEEDHARD;
+        break;
     default:
         break;
     }
+    return speed;
 }
 
-void event_loop(int q, int delay)
+void event_loop(UI ui, int q, int delay)
 {
     int dt;
     while (true)
@@ -36,8 +36,8 @@ void event_loop(int q, int delay)
         auto last_time = chrono::system_clock::now();
         erase();
 
-        bool a = game_logic(q);
-        if (a == false)
+        bool a = game_logic(ui, q);
+        if (!a)
             break;
         refresh();
 
@@ -61,13 +61,14 @@ int main()
     cin >> mode;
     if (mode < 1 || mode > 3)
     {
-        cout << "\n Invalid mode, try again!"<<endl;
+        cout << "\n Invalid mode, try again!" << endl;
         return 1;
     }
     int speed = set_speed(mode);
 
-    init_ui();
-    event_loop(mode,speed);
-    tear_down_ui();
+    UI ui;
+    ui.init();
+    event_loop(ui, mode, speed);
+    ui.finish();
     cout << "\n\t\t\t🐍 GAME OVER! 🐍  \n\n";
 }

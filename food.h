@@ -3,7 +3,7 @@
 #include <curses.h>
 #include<vector>
 #include<random>
-#include "settings_constant.h"
+#include "constants.h"
 using namespace std;
 
 

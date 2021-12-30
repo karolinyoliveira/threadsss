@@ -1,2 +1,2 @@
 run: 
-	g++ *.cpp -l ncurses -o threadsss && ./threadsss
+	g++ *.cpp -l ncursesw -o threadsss && ./threadsss

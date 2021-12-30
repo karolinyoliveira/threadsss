@@ -1,6 +1,5 @@
 TODO LIST
 
 [] Use semaphores and threads hehe
-[] Create a class to encapsulate player's logic
-[] Update game logic to work with two playes
+[] Define winning rules and implement a "game over" screen with score and player who won
 [] Every aesthetic thing you want to!

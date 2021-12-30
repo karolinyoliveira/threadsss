@@ -3,7 +3,7 @@
 #define DEF_SNAKE 
 #include<curses.h>
 #include<vector>
-#include "settings_constant.h"
+#include "constants.h"
 using namespace std;
 
 class Snake
@@ -15,10 +15,10 @@ private:
 
 public:
     void init(vector<pair<int, int>> startingPos);
-    void paint(int color1, int color2);
+    void paint(int nplayer, int color);
     void grow();
     bool has_collision();
-    pair<int, int> slither(int direction);
+    pair<int, int> slither(Controls crtl, int direction);
 };
 
 #endif
