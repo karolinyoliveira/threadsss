@@ -18,6 +18,8 @@ private:
     Snake snake;
     int score;
 public:
+    void set_snake(Snake s);
+    Snake get_snake();
     int get_score();
     void set_controls(int up, int down, int left, int right);
     void init();

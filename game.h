@@ -9,7 +9,7 @@
 #include "snake.h"
 #include "food.h"
 
-bool game_logic(UI ui, int k);
+bool game_logic(UI ui, int k, int dt);
 void endgame();
 
 #endif

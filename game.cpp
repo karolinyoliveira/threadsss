@@ -6,13 +6,30 @@ int level;
 
 Player p1;
 Player p2;
+int p1_idx, p2_idx;
+Snake snakes[SNAKES];
+int total_time=0;
 
 void start_game()
 {
+    p1_idx = 0;
+    p2_idx = 1;
+    for(int i=0; i<SNAKES; i++)
+    {
+        vector<pair<int, int>> start_position;
+        start_position.push_back(make_pair(rand() % LINES, rand() % COLS));
+        start_position.push_back(make_pair(start_position[0].first - 1, start_position[0].second));
+        start_position.push_back(make_pair(start_position[1].first - 1, start_position[1].second));
+        Snake snake;
+        snake.init(start_position);
+        snakes[i] = snake;
+    }
     p1.set_controls('w', 's', 'a', 'd');
+    p1.set_snake(snakes[p1_idx]);
     p1.init();
 
     p2.set_controls('A', 'B', 'D', 'C');
+    p2.set_snake(snakes[p2_idx]);
     p2.init();
 
     init_food();
@@ -46,11 +63,28 @@ void paint_score(int k)
         break;
     }
 
-    addstr("|||                  Score P1: ");
-    printw("%d - Score P2: %d  Difficulty %s           |||", p1.get_score(), p2.get_score(), s);
+    addstr("|||       Score P1: ");
+    printw("%d - Score P2: %d | Difficulty: %s | TIME: %06d       |||", p1.get_score(), p2.get_score(), s, total_time);
 }
 
-bool game_logic(UI ui, int k)
+void swap_snakes()
+{
+    if (total_time%SWAP_TIME==0) 
+    {
+        snakes[p1_idx] = p1.get_snake();
+        snakes[p2_idx] = p2.get_snake();
+        do {
+            p1_idx = rand() % SNAKES;
+            p2_idx = rand() % SNAKES;
+        } while(p1_idx == p2_idx);
+        p1.set_snake(snakes[p1_idx]);
+        p2.set_snake(snakes[p2_idx]);
+    }
+
+    return;
+}
+
+bool game_logic(UI ui, int k, int dt)
 {
     int key = getch();
     ui.paint();
@@ -66,6 +100,16 @@ bool game_logic(UI ui, int k)
     }
     else if (game_state == START)
     {
+        total_time += dt/10000;
+        swap_snakes();
+        for(int i=0; i<6; i++)
+        {
+            if (i != p1_idx && i != p2_idx)
+            {
+                snakes[i].paint(4, COLOR_RED);
+            }
+        }
+
         // ------------------------------ PLAYER 1 --------------------------------------
         if (!p1.move(key, 1, COLOR_GREEN))
         {
