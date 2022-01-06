@@ -7,6 +7,8 @@ const int SPEEDMEDIUM = 100000;
 const int SPEEDHARD = 70000;
 const int BEFORE_START=0,START=1,ENDED=2;
 const int FOOD_COUNT=5;
+const int SWAP_TIME=623;
+const int SNAKES=3;
 
 typedef struct controls
 {

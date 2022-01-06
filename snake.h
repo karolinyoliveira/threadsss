@@ -19,6 +19,7 @@ public:
     void grow();
     bool has_collision();
     pair<int, int> slither(Controls crtl, int direction);
+    int facing_direction;
 };
 
 #endif

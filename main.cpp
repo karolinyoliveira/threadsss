@@ -36,7 +36,7 @@ void event_loop(UI ui, int q, int delay)
         auto last_time = chrono::system_clock::now();
         erase();
 
-        bool a = game_logic(ui, q);
+        bool a = game_logic(ui, q, dt);
         if (!a)
             break;
         refresh();

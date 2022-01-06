@@ -15,14 +15,31 @@ int Player::get_score()
 
 void Player::init()
 {
-    direction = crtl.left;
     score = 0;
+}
 
-    vector<pair<int, int>> start_position;
-    start_position.push_back(make_pair(rand() % LINES, rand() % COLS));
-    start_position.push_back(make_pair(start_position[0].first - 1, start_position[0].second));
-    start_position.push_back(make_pair(start_position[1].first - 1, start_position[1].second));
-    snake.init(start_position);
+void Player::set_snake(Snake s)
+{
+    snake = s;
+    switch(snake.facing_direction) {
+        case 0:
+            direction = crtl.up;
+            break;
+        case 1:
+            direction = crtl.down;
+            break;
+        case 2:
+            direction = crtl.left;
+            break;
+        case 3:
+            direction = crtl.right;
+            break;
+    }
+}
+
+Snake Player::get_snake()
+{
+    return snake;
 }
 
 bool Player::move(int key, int nplayer, int color)
@@ -43,6 +60,7 @@ bool Player::move(int key, int nplayer, int color)
     {
         direction = crtl.right;
     }
+    snake.facing_direction = direction;
 
     pair<int, int> head = snake.slither(crtl, direction);
     snake.paint(nplayer, color);
