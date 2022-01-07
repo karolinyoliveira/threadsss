@@ -10,8 +10,11 @@ int p1_idx, p2_idx;
 Snake snakes[SNAKES];
 int total_time=0;
 
+sem_t player_semaphore;
 void start_game()
 {
+    sem_init(&player_semaphore, 0, 1);
+
     p1_idx = 0;
     p2_idx = 1;
     for(int i=0; i<SNAKES; i++)
@@ -86,32 +89,31 @@ void swap_snakes()
 
 void p1_movement(int key)
 {
-    if (game_state == START)
+    sem_wait(&player_semaphore);
+    if (!p1.move(key, 1, COLOR_GREEN))
     {
-        //int key = getch();
-        if (!p1.move(key, 1, COLOR_GREEN))
-        {
-            endgame();
-        }
+        endgame();
     }
+    sem_post(&player_semaphore);
     return;
 }
 
 void p2_movement(int key)
 {
-    if (game_state == START)
-    {
-        if (key == '\033')
-        {            // reading arrows
-            getch(); // skipping '[' character
-            key = getch();
-        }
-
-        if (!p2.move(key, 2, COLOR_YELLOW))
-        {
-            endgame();
-        }
+    int new_key = key;
+    if (key == '\033')
+    {            // reading arrows
+        getch(); // skipping '[' character
+        new_key = getch();
     }
+
+
+    sem_wait(&player_semaphore);
+    if (!p2.move(new_key, 2, COLOR_YELLOW))
+    {
+        endgame();
+    }
+    sem_post(&player_semaphore);
     return;
 }
 
@@ -142,25 +144,9 @@ bool game_logic(UI ui, int k, int dt)
         }
 
         // ------------------------------ PLAYER 1 --------------------------------------
-        /*
-        if (!p1.move(key, 1, COLOR_GREEN))
-        {
-            endgame();
-        }*/
         std::thread t1(p1_movement, key);
 
         // ------------------------------ PLAYER 2 --------------------------------------
-        /*
-        if (key == '\033')
-        {            // reading arrows
-            getch(); // skipping '[' character
-            key = getch();
-        }
-
-        if (!p2.move(key, 2, COLOR_YELLOW))
-        {
-            endgame();
-        }*/
         std::thread t2(p2_movement, key);
 
 

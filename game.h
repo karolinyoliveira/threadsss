@@ -1,9 +1,10 @@
 #ifndef DEF_GAME
 
 #define DEF_GAME
+#include <thread>
+#include <semaphore.h>
 #include <curses.h>
 #include <string.h>
-#include <thread>
 #include "constants.h"
 #include "ui.h"
 #include "player.h"
