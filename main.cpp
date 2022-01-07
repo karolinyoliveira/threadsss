@@ -1,8 +1,9 @@
 #include <iostream>
+#include <chrono>
 #include <unistd.h>
 #include <curses.h>
 #include "constants.h"
-#include <chrono>
+#include "mutexes.h"
 #include "ui.h"
 #include "game.h"
 
@@ -44,8 +45,20 @@ void event_loop(UI ui, int q, int delay)
         do
         {
             auto current_time = chrono::system_clock::now();
-            dt = chrono::duration_cast<std::chrono::microseconds>(current_time - last_time).count();
+            dt = chrono::duration_cast<chrono::microseconds>(current_time - last_time).count();
         } while (dt < delay);
+    }
+}
+
+void init_mutexes()
+{
+    for (int i = 0; i < LINES; i++)
+    {
+        for (int j = 0; j < COLS; j++)
+        {
+            string mutexName = "MTX_" + to_string(i) + "_" + to_string(j);
+            create_mutex(mutexName);
+        }
     }
 }
 
@@ -68,6 +81,8 @@ int main()
 
     UI ui;
     ui.init();
+    //init_mutexes();
+
     event_loop(ui, mode, speed);
     ui.finish();
     cout << "\n\t\t\t🐍 GAME OVER! 🐍  \n\n";
