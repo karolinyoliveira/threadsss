@@ -18,6 +18,8 @@ public:
     void paint(int nplayer, int color);
     void grow();
     bool has_collision();
+    vector<pair<int, int>> get_body();
+    pair<int, int> get_head();
     pair<int, int> slither(Controls crtl, int direction);
     int facing_direction;
 };
