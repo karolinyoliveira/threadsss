@@ -3,6 +3,7 @@
 #define DEF_GAME
 #include <curses.h>
 #include <string.h>
+#include <thread>
 #include "constants.h"
 #include "ui.h"
 #include "player.h"

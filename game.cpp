@@ -84,6 +84,37 @@ void swap_snakes()
     return;
 }
 
+void p1_movement(int key)
+{
+    if (game_state == START)
+    {
+        //int key = getch();
+        if (!p1.move(key, 1, COLOR_GREEN))
+        {
+            endgame();
+        }
+    }
+    return;
+}
+
+void p2_movement(int key)
+{
+    if (game_state == START)
+    {
+        if (key == '\033')
+        {            // reading arrows
+            getch(); // skipping '[' character
+            key = getch();
+        }
+
+        if (!p2.move(key, 2, COLOR_YELLOW))
+        {
+            endgame();
+        }
+    }
+    return;
+}
+
 bool game_logic(UI ui, int k, int dt)
 {
     int key = getch();
@@ -111,12 +142,15 @@ bool game_logic(UI ui, int k, int dt)
         }
 
         // ------------------------------ PLAYER 1 --------------------------------------
+        /*
         if (!p1.move(key, 1, COLOR_GREEN))
         {
             endgame();
-        }
+        }*/
+        std::thread t1(p1_movement, key);
 
         // ------------------------------ PLAYER 2 --------------------------------------
+        /*
         if (key == '\033')
         {            // reading arrows
             getch(); // skipping '[' character
@@ -126,9 +160,15 @@ bool game_logic(UI ui, int k, int dt)
         if (!p2.move(key, 2, COLOR_YELLOW))
         {
             endgame();
-        }
+        }*/
+        std::thread t2(p2_movement, key);
 
-        paint_food();
+
+        std::thread t3(paint_food);
+
+        t1.join();
+        t2.join();
+        t3.join();
     }
     else
     {
