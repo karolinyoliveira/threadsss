@@ -4,6 +4,7 @@
 #include <curses.h>
 #include <vector>
 #include <random>
+#include <mutex>
 #include "constants.h"
 #include "snake.h"
 #include "food.h"

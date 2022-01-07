@@ -1,4 +1,5 @@
 #include "player.h"
+mutex locker;
 
 void Player::set_controls(int up, int down, int left, int right)
 {
@@ -62,8 +63,10 @@ bool Player::move(int key, int nplayer, int color)
     }
     snake.facing_direction = direction;
 
+    locker.lock();
     pair<int, int> head = snake.slither(crtl, direction);
     snake.paint(nplayer, color);
+    locker.unlock();
 
     if (try_eating_food(head))
     {
@@ -74,6 +77,7 @@ bool Player::move(int key, int nplayer, int color)
     if (snake.has_collision())
     {
         return false;
-    }
+    }    
+    
     return true;
 }

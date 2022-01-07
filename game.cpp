@@ -147,7 +147,7 @@ bool game_logic(UI ui, int k, int dt)
         {
             endgame();
         }*/
-        std::thread t1(p1_movement, key);
+        thread t1(p1_movement, key);
 
         // ------------------------------ PLAYER 2 --------------------------------------
         /*
@@ -161,10 +161,10 @@ bool game_logic(UI ui, int k, int dt)
         {
             endgame();
         }*/
-        std::thread t2(p2_movement, key);
+        thread t2(p2_movement, key);
 
 
-        std::thread t3(paint_food);
+        thread t3(paint_food);
 
         t1.join();
         t2.join();
