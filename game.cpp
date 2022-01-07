@@ -89,8 +89,8 @@ void swap_snakes()
 
 void p1_movement(int key)
 {
-    p1.move(key);
     sem_wait(&player_semaphore);
+    p1.move(key);
     p1.get_snake().paint(1, COLOR_GREEN);
     if(!p1.check_collision(p2))
     {
@@ -109,9 +109,8 @@ void p2_movement(int key)
         new_key = getch();
     }
 
-
-    p2.move(new_key);
     sem_wait(&player_semaphore);
+    p2.move(new_key);
     p2.get_snake().paint(2, COLOR_YELLOW);
     if (!p2.check_collision(p1))
     {
