@@ -1,5 +1,4 @@
 #include "player.h"
-mutex locker;
 
 void Player::set_controls(int up, int down, int left, int right)
 {
