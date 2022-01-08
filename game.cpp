@@ -10,8 +10,11 @@ int p1_idx, p2_idx;
 Snake snakes[SNAKES];
 int total_time = 0;
 
+sem_t player_semaphore;
 void start_game()
 {
+    sem_init(&player_semaphore, 0, 1);
+
     p1_idx = 0;
     p2_idx = 1;
     for (int i = 0; i < SNAKES; i++)
@@ -98,33 +101,38 @@ void swap_snakes()
 
 void p1_movement(int key)
 {
-    if (game_state == START)
+    sem_wait(&player_semaphore);
+    p1.move(key);
+    p1.get_snake().paint(1, COLOR_GREEN);
+    if (!p1.check_collision(p2))
     {
-        if (!p1.move(key, 1, COLOR_GREEN))
-        {
-            winner = 2;
-            endgame();
-        }
+
+        winner = 2;
+        endgame();
     }
+    sem_post(&player_semaphore);
     return;
 }
 
 void p2_movement(int key)
 {
-    if (game_state == START)
-    {
-        if (key == '\033')
-        {            // reading arrows
-            getch(); // skipping '[' character
-            key = getch();
-        }
-
-        if (!p2.move(key, 2, COLOR_YELLOW))
-        {
-            winner = 1;
-            endgame();
-        }
+    int new_key = key;
+    if (key == '\033')
+    {            // reading arrows
+        getch(); // skipping '[' character
+        new_key = getch();
     }
+
+    sem_wait(&player_semaphore);
+    p2.move(new_key);
+    p2.get_snake().paint(2, COLOR_YELLOW);
+    if (!p2.check_collision(p1))
+    {
+        winner = 1;
+        endgame();
+    }
+
+    sem_post(&player_semaphore);
     return;
 }
 

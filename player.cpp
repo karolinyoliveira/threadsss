@@ -43,7 +43,7 @@ Snake Player::get_snake()
     return snake;
 }
 
-bool Player::move(int key, int nplayer, int color)
+void Player::move(int key)
 {
     if (key == crtl.up && direction != crtl.down)
     {
@@ -62,22 +62,31 @@ bool Player::move(int key, int nplayer, int color)
         direction = crtl.right;
     }
     snake.facing_direction = direction;
-
-    locker.lock();
     pair<int, int> head = snake.slither(crtl, direction);
-    snake.paint(nplayer, color);
-    locker.unlock();
+    return;
+}
 
+
+bool Player::check_collision(Player other_player)
+{
+    pair<int, int> head = snake.get_head();
     if (try_eating_food(head))
-    {
-        snake.grow();
-        score++;
-    }
+        {
+            snake.grow();
+            score++;
+        }
 
     if (snake.has_collision())
+        {
+            return false;
+        }
+
+    vector<pair<int, int>> enemy_body = other_player.get_snake().get_body();
+    for(int i=0; i<enemy_body.size(); i++) 
     {
-        return false;
-    }    
-    
+        if (head == enemy_body[i]) {
+            return false;
+        }
+    }
     return true;
 }

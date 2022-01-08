@@ -22,6 +22,16 @@ void Snake::paint(int nplayer, int color)
     }
 }
 
+vector<pair<int, int>> Snake::get_body()
+{
+    return body;
+}
+
+pair<int, int> Snake::get_head()
+{
+    return body[0];
+}
+
 pair<int, int> Snake::slither(Controls crtl, int direction)
 {
     facing_direction = direction;

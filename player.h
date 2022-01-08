@@ -24,7 +24,8 @@ public:
     int get_score();
     void set_controls(int up, int down, int left, int right);
     void init();
-    bool move(int key, int nplayer, int color);
+    void move(int key);
+    bool check_collision(Player other_player);
 };
 
 #endif
