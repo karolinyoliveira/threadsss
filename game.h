@@ -12,5 +12,6 @@
 
 bool game_logic(UI ui, int k, int dt);
 void endgame();
+void time_out();
 
 #endif
