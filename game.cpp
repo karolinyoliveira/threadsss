@@ -2,19 +2,22 @@
 
 int game_state = BEFORE_START;
 
-int level;
+int level, winner;
 
 Player p1;
 Player p2;
 int p1_idx, p2_idx;
 Snake snakes[SNAKES];
-int total_time=0;
+int total_time = 0;
 
+sem_t player_semaphore;
 void start_game()
 {
+    sem_init(&player_semaphore, 0, 1);
+
     p1_idx = 0;
     p2_idx = 1;
-    for(int i=0; i<SNAKES; i++)
+    for (int i = 0; i < SNAKES; i++)
     {
         vector<pair<int, int>> start_position;
         start_position.push_back(make_pair(rand() % LINES, rand() % COLS));
@@ -42,6 +45,11 @@ void endgame()
     game_state = ENDED;
 }
 
+void time_out()
+{
+    game_state = TIMEOUT;
+}
+
 void paint_score(int k)
 {
     move(0, 6);
@@ -63,24 +71,68 @@ void paint_score(int k)
         break;
     }
 
+    int available_time = GAME_TIME_MILLI - total_time;
+    if (available_time < 0)
+    {
+        available_time = 0;
+    }
+
     addstr("|||       Score P1: ");
-    printw("%d - Score P2: %d | Difficulty: %s | TIME: %06d       |||", p1.get_score(), p2.get_score(), s, total_time);
+    printw("%d - Score P2: %d | Difficulty: %s | TIME: %06d       |||", p1.get_score(), p2.get_score(), s, available_time);
 }
 
 void swap_snakes()
 {
-    if (total_time%SWAP_TIME==0) 
+    if (total_time % SWAP_TIME == 0)
     {
         snakes[p1_idx] = p1.get_snake();
         snakes[p2_idx] = p2.get_snake();
-        do {
+        do
+        {
             p1_idx = rand() % SNAKES;
             p2_idx = rand() % SNAKES;
-        } while(p1_idx == p2_idx);
+        } while (p1_idx == p2_idx);
         p1.set_snake(snakes[p1_idx]);
         p2.set_snake(snakes[p2_idx]);
     }
 
+    return;
+}
+
+void p1_movement(int key)
+{
+    sem_wait(&player_semaphore);
+    p1.move(key);
+    p1.get_snake().paint(1, COLOR_GREEN);
+    if (!p1.check_collision(p2))
+    {
+
+        winner = 2;
+        endgame();
+    }
+    sem_post(&player_semaphore);
+    return;
+}
+
+void p2_movement(int key)
+{
+    int new_key = key;
+    if (key == '\033')
+    {            // reading arrows
+        getch(); // skipping '[' character
+        new_key = getch();
+    }
+
+    sem_wait(&player_semaphore);
+    p2.move(new_key);
+    p2.get_snake().paint(2, COLOR_YELLOW);
+    if (!p2.check_collision(p1))
+    {
+        winner = 1;
+        endgame();
+    }
+
+    sem_post(&player_semaphore);
     return;
 }
 
@@ -89,20 +141,30 @@ bool game_logic(UI ui, int k, int dt)
     int key = getch();
     ui.paint();
     paint_score(k);
-    if (game_state == BEFORE_START)
+
+    switch (game_state)
+    {
+    case BEFORE_START:
     {
         move(10, 15);
-        addstr("press spacebar to start playing best playing when full screen");
+        addstr("press spacebar to start playing :)");
         if (key == 32)
         {
             start_game();
         }
+        break;
     }
-    else if (game_state == START)
+    case START:
     {
-        total_time += dt/10000;
+        total_time += dt / 10000;
+        if (total_time >= GAME_TIME_MILLI)
+        {
+            time_out();
+            break;
+        }
+
         swap_snakes();
-        for(int i=0; i<6; i++)
+        for (int i = 0; i < 6; i++)
         {
             if (i != p1_idx && i != p2_idx)
             {
@@ -110,34 +172,50 @@ bool game_logic(UI ui, int k, int dt)
             }
         }
 
-        // ------------------------------ PLAYER 1 --------------------------------------
-        if (!p1.move(key, 1, COLOR_GREEN))
-        {
-            endgame();
-        }
+        thread t1(p1_movement, key);
+        thread t2(p2_movement, key);
 
-        // ------------------------------ PLAYER 2 --------------------------------------
-        if (key == '\033')
-        {            // reading arrows
-            getch(); // skipping '[' character
-            key = getch();
-        }
+        thread t3(paint_food);
 
-        if (!p2.move(key, 2, COLOR_YELLOW))
-        {
-            endgame();
-        }
-
-        paint_food();
+        t1.join();
+        t2.join();
+        t3.join();
+        break;
     }
-    else
+    case ENDED:
     {
         move(10, 45);
-        addstr("GAME OVER!!!\n \t\t\t\t\t\t press spacebar to restart \n \t\t\t\t\t\t press q to quit");
+        printw("GAME OVER!!!\n \t\t\t\t\t\t Player %d wins!!!\n \t\t\t\t\t\t Press spacebar to restart \n \t\t\t\t\t\t Or press q to quit", winner);
 
+        break;
+    }
+    case TIMEOUT:
+    {
+        move(10, 45);
+        if (p1.get_score() == p2.get_score())
+        {
+            printw("GAME OVER!!!\n \t\t\t\t\t\t It's a tie!!!\n \t\t\t\t\t\t Press spacebar to restart \n \t\t\t\t\t\t Or press q to quit");
+        }
+        else if (p1.get_score() > p2.get_score())
+        {
+            winner = 1;
+            printw("GAME OVER!!!\n \t\t\t\t\t\t Player %d wins!!!\n \t\t\t\t\t\t Press spacebar to restart \n \t\t\t\t\t\t Or press q to quit", winner);
+        }
+        else
+        {
+            winner = 2;
+            printw("GAME OVER!!!\n \t\t\t\t\t\t Player %d wins!!!\n \t\t\t\t\t\t Press spacebar to restart \n \t\t\t\t\t\t Or press q to quit", winner);
+        }
+        break;
+    }
+    }
+
+    if (game_state == ENDED || game_state == TIMEOUT)
+    {
         if (key == 32)
         {
             game_state = START;
+            total_time = 0;
             start_game();
         }
         else if (key == 113)
@@ -145,6 +223,5 @@ bool game_logic(UI ui, int k, int dt)
             return false;
         }
     }
-
     return true;
 }

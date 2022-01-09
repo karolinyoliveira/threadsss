@@ -14,13 +14,13 @@ int set_speed(int mode)
     switch (mode)
     {
     case 1:
-        speed = SPEEDEASY;
+        speed = SPEED_EASY;
         break;
     case 2:
-        speed = SPEEDMEDIUM;
+        speed = SPEED_MEDIUM;
         break;
     case 3:
-        speed = SPEEDHARD;
+        speed = SPEED_HARD;
         break;
     default:
         break;
@@ -52,7 +52,7 @@ void event_loop(UI ui, int q, int delay)
 int main()
 {
     cout << "\n\t\t 🐍 WELCOME TO THREADSSS! 🐍 \n\n";
-    cout << "Use WASD to control the green snake and arrows to control the blue one.\n\n";
+    cout << "Use WASD to control the green snake and arrows to control the yellow one.\n\n";
     cout << "Choose game mode\n\n";
     cout << " 1.Easy \n 2.Medium \n 3.Hard \n";
     cout << "Your choice: ";
