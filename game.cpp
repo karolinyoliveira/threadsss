@@ -71,7 +71,7 @@ void paint_score(int k)
         break;
     }
 
-    int available_time = GAME_TIME_MILLI - total_time;
+    int available_time = GAME_DURATION - total_time;
     if (available_time < 0)
     {
         available_time = 0;
@@ -157,7 +157,7 @@ bool game_logic(UI ui, int k, int dt)
     case START:
     {
         total_time += dt / 10000;
-        if (total_time >= GAME_TIME_MILLI)
+        if (total_time >= GAME_DURATION)
         {
             time_out();
             break;

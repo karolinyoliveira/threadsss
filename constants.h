@@ -9,7 +9,7 @@ const int BEFORE_START=0,START=1,ENDED=2, TIMEOUT=3;
 const int FOOD_COUNT=5;
 const int SWAP_TIME=623;
 const int SNAKES=3;
-const int GAME_TIME_MILLI=60000;
+const int GAME_DURATION=6000;
 
 typedef struct controls
 {
