@@ -70,7 +70,6 @@ void Snake::grow()
     body.push_back(tail);
 }
 
-// CRITIC AREA: Implement with semaphores
 bool Snake::has_collision()
 {
     pair<int, int> head = body[0];

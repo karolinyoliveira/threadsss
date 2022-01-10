@@ -13,6 +13,9 @@
 #include "food.h"
 
 bool game_logic(UI ui, int k, int dt);
+void p1_movement(int key);
+void p2_movement(int key);
+void swap_snakes();
 void endgame();
 void time_out();
 

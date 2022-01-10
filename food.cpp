@@ -23,7 +23,6 @@ void paint_food(){
     }
 }
 
-// TODO: SEMAPHORES IMPLEMENTATION
 bool try_eating_food(pair<int,int> head){
     for(int i=0;i<foods.size();i++){
         if(foods[i].first==head.first && foods[i].second==head.second){
