@@ -24,7 +24,7 @@ public:
     void set_controls(int up, int down, int left, int right);
     void init();
     void move(int key);
-    bool check_collision(Player other_player);
+    bool check_collision();
 };
 
 #endif
