@@ -66,26 +66,17 @@ void Player::move(int key)
 }
 
 
-bool Player::check_collision(Player other_player)
+bool Player::check_collision()
 {
     pair<int, int> head = snake.get_head();
     if (try_eating_food(head))
-        {
-            snake.grow();
-            score++;
-        }
-
-    if (snake.has_collision())
-        {
-            return false;
-        }
-
-    vector<pair<int, int>> enemy_body = other_player.get_snake().get_body();
-    for(int i=0; i<enemy_body.size(); i++) 
     {
-        if (head == enemy_body[i]) {
-            return false;
-        }
+        snake.grow();
+        score++;
+    }
+    if (snake.has_collision())
+    {
+        return false;
     }
     return true;
 }

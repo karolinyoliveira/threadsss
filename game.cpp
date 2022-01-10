@@ -6,6 +6,7 @@ int level, winner;
 
 Player p1;
 Player p2;
+vector<pair<int, int>> MAP;
 int p1_idx, p2_idx;
 Snake snakes[SNAKES];
 int total_time = 0;
@@ -38,6 +39,26 @@ void start_game()
     init_food();
 
     game_state = START;
+}
+
+void update_map()
+{
+    MAP.clear();
+    vector<pair<int, int>> body_p1 = p1.get_snake().get_body();
+    vector<pair<int, int>> body_p2 = p2.get_snake().get_body();
+    MAP.insert(MAP.end(), body_p1.begin()+1, body_p1.end());
+    MAP.insert(MAP.end(), body_p2.begin()+1, body_p2.end());
+}
+
+bool player_collided(Player player) // checking if snakes are overlapping
+{
+    pair<int, int> head = player.get_snake().get_head();
+    if(std::find(MAP.begin(), MAP.end(), head) != MAP.end())
+    {
+        return true;
+    }
+
+    return false;
 }
 
 void endgame()
@@ -95,21 +116,22 @@ void swap_snakes()
         p1.set_snake(snakes[p1_idx]);
         p2.set_snake(snakes[p2_idx]);
     }
-
     return;
 }
 
 void p1_movement(int key)
 {
-    sem_wait(&player_semaphore);
     p1.move(key);
-    p1.get_snake().paint(1, COLOR_GREEN);
-    if (!p1.check_collision(p2))
-    {
+    p1.check_collision();
 
+    sem_wait(&player_semaphore);
+    p1.get_snake().paint(1, COLOR_GREEN);
+    if (player_collided(p1))
+    {
         winner = 2;
         endgame();
     }
+    update_map();
     sem_post(&player_semaphore);
     return;
 }
@@ -122,16 +144,17 @@ void p2_movement(int key)
         getch(); // skipping '[' character
         new_key = getch();
     }
+    p2.move(new_key);
+    p2.check_collision();
 
     sem_wait(&player_semaphore);
-    p2.move(new_key);
     p2.get_snake().paint(2, COLOR_YELLOW);
-    if (!p2.check_collision(p1))
+    if (player_collided(p2))
     {
         winner = 1;
         endgame();
     }
-
+    update_map();
     sem_post(&player_semaphore);
     return;
 }

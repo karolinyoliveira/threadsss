@@ -2,6 +2,7 @@
 
 #define DEF_GAME
 #include <thread>
+#include <algorithm>
 #include <semaphore.h>
 #include <curses.h>
 #include <string.h>
